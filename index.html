@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#10182b" />
-<title>Elemental Guardians — Tower Defense · Upgrade 66 Checkpoint Status & Recovery</title>
+<title>Elemental Guardians — Tower Defense · Upgrade 71 Challenge Modes</title>
 <style>
   :root{--bg:#0e1627;--panel:#17233a;--panel2:#202f4a;--line:#3b4c6d;--text:#eef5ff;--muted:#a9b9d2;--gold:#ffd67d;--accent:#80e8ff;--good:#9fffc5;--danger:#ff8c9c}
   *{box-sizing:border-box} html,body{margin:0;min-height:100%;background:radial-gradient(ellipse at top,#1b2c4b 0%,#0e1627 58%,#090e1a 100%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif} body{padding:12px;touch-action:manipulation}
@@ -174,6 +174,13 @@
 @media(max-width:520px){.stage-rewards{grid-template-columns:1fr}.stage-rewards .btn{padding:7px;font-size:12px}}
 </style>
 
+<style id="upgrade71-difficulty-badge-style">
+.u71-difficulty-badge{position:absolute;left:8px;top:8px;z-index:3;pointer-events:none;border:1px solid #6d84a6;border-radius:999px;background:#0b1728df;color:#eaf4ff;padding:5px 9px;font:850 9px/1.15 system-ui,sans-serif;letter-spacing:.07em;box-shadow:0 3px 10px #0006}
+.u71-difficulty-badge[data-mode="veteran"]{border-color:#e7bb72;color:#ffe0a0}
+.u71-difficulty-badge[data-mode="nightmare"]{border-color:#e56a84;color:#ffb1c0;background:#351827eF}
+body:not(.u48-map-expanded) .u71-difficulty-badge{top:8px;left:8px}
+@media(max-width:520px){.u71-difficulty-badge{font-size:8px;padding:4px 7px;top:6px;left:6px}}
+</style>
 </head>
 <body>
 <div class="orientation-hint" id="orientation-hint"><div class="orientation-card"><span class="phone">📱</span><h2>Turn your device sideways</h2><p>Elemental Guardians is designed for landscape mode. Rotate your phone horizontally for the full battlefield and controls.</p><button class="btn primary orientation-fullscreen-btn" id="orientation-fullscreen-btn" type="button">⛶ USE FULLSCREEN</button><p class="orientation-note">Tap to expand the game, then turn your phone sideways.</p></div></div>
@@ -226,13 +233,14 @@
       <div class="canvas-frame" id="canvas-frame">
         <canvas id="game" width="1200" height="720" aria-label="Tower defense battlefield. Select a tower and tap a glowing rune pad; placements outside tower range of the enemy path are blocked."></canvas>
         <div id="upgrade22-threat-alert" role="status" aria-live="polite"></div>
+        <div id="u71-difficulty-badge" class="u71-difficulty-badge" aria-live="polite">🛡️ NORMAL</div>
         <div class="canvas-tip" id="canvas-tip">Choose a tower → tap a glowing rune pad. Range warnings help avoid ineffective placements.</div>
         <div class="toast" id="toast" role="status" aria-live="polite"></div>
         <div class="overlay" id="intro">
           <div class="modal">
             <div class="crest">🔮✨</div>
             <h2>THE RIFT IS OPEN</h2>
-            <p>The elemental gates have fallen. Build magical towers, choose a guardian hero, and protect the Sacred Crystal through 10 waves per stage. Your towers and gold carry into the next stage.</p>
+            <p>The elemental gates have fallen. Build magical towers, choose a guardian hero, and protect the Sacred Crystal through 10 waves per stage. Your towers and gold carry into the next stage. Choose a challenge below before entering the realm.</p>
             <div class="howto">
               <div><b>① Choose a tower</b>Tap an element card, then a glowing rune pad.</div>
               <div><b>② Grow your power</b>Tap a tower to upgrade it or sell it.</div>
@@ -240,6 +248,15 @@
               <div><b>④ Exploit weaknesses</b>Fire melts slimes, water cracks golems, storm shocks scouts, and shadow harms wisps.</div>
               <div><b>⑤ Cast your ultimate</b>Use your hero's mana ability when enemies gather.</div>
             </div>
+            <section class="u71-challenge" aria-labelledby="u71-challenge-title">
+              <div class="u71-challenge-head"><strong id="u71-challenge-title">⚔️ Choose Challenge</strong><span>Change before entering</span></div>
+              <div class="u71-difficulty-grid" role="group" aria-label="Campaign difficulty">
+                <button class="u71-difficulty active" type="button" data-u71-difficulty="normal" aria-pressed="true"><b>🛡️ Normal</b><small>Classic campaign</small></button>
+                <button class="u71-difficulty" type="button" data-u71-difficulty="veteran" aria-pressed="false"><b>⚔️ Veteran</b><small>Harder waves & elites</small></button>
+                <button class="u71-difficulty" type="button" data-u71-difficulty="nightmare" aria-pressed="false"><b>🔥 Nightmare</b><small>Brutal bosses & crowds</small></button>
+              </div>
+              <p id="u71-difficulty-note" aria-live="polite">Normal: the original balanced campaign.</p>
+            </section>
             <button class="btn primary" id="begin" style="width:100%;font-size:14px;padding:13px">ENTER THE REALM ✦</button>
           </div>
         </div>
@@ -396,6 +413,20 @@
 @media(max-width:420px){#checkpoint-protect-modal .checkpoint-protect-card{padding:16px}#checkpoint-protect-modal .checkpoint-protect-actions{grid-template-columns:1fr}#checkpoint-protect-modal #checkpoint-cancel{grid-column:auto}}
 </style>
 
+<style id="upgrade71-challenge-mode-style">
+.u71-challenge{margin:11px 0 8px;padding:10px;border:1px solid #4c6284;border-radius:12px;background:#0e1a2caa;text-align:left}
+.u71-challenge-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px;color:#eef5ff;font-size:12px}
+.u71-challenge-head span{color:#91a9ca;font-size:9px;text-align:right}
+.u71-difficulty-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.u71-difficulty{min-width:0;border:1px solid #405574;border-radius:9px;background:#17263b;color:#eaf3ff;padding:8px 4px;text-align:center;cursor:pointer;touch-action:manipulation}
+.u71-difficulty b{display:block;font-size:11px;white-space:nowrap}
+.u71-difficulty small{display:block;margin-top:4px;color:#a9bedb;font-size:9px;line-height:1.25}
+.u71-difficulty.active{border-color:#ffcf78;background:linear-gradient(160deg,#443520,#252334);box-shadow:0 0 0 1px #ffcf7833 inset}
+.u71-difficulty[data-u71-difficulty="nightmare"].active{border-color:#ff8192;background:linear-gradient(160deg,#542739,#2b1c30);box-shadow:0 0 0 1px #ff819233 inset}
+#u71-difficulty-note{margin:7px 0 0;color:#c5d8f2;font-size:10px;line-height:1.4;min-height:14px}
+@media(max-width:460px){.u71-challenge{padding:7px;margin:8px 0}.u71-difficulty{padding:7px 2px}.u71-difficulty b{font-size:10px}.u71-difficulty small{font-size:8px}.u71-challenge-head{font-size:11px}}
+@media(orientation:landscape) and (max-height:720px){.u71-challenge{margin:5px 0;padding:6px}.u71-challenge-head{margin-bottom:4px;font-size:10px}.u71-difficulty{padding:5px 3px}.u71-difficulty b{font-size:9px}.u71-difficulty small{margin-top:2px;font-size:7px}#u71-difficulty-note{margin-top:4px;font-size:8px;min-height:10px}}
+</style>
 <script type="module">
 (async () => {
   let THREE;
@@ -594,6 +625,19 @@
   let stage=1,stageTransitionPending=false;
   let stageRewardClaimed=false,stageRewardChoice=null;
   const SOLO_STAGE_LIMIT=5, stageRealmSequence=['astral','infernal','frozen','spirit','shadow'];
+  // Upgrade 71: selectable challenge rules; Normal preserves the original balance.
+  const challengeProfiles={
+    normal:{label:'Normal',hp:1,speed:1,spawnCount:1,spawnRate:1,coreDamage:1,eliteBonus:0,bossBonus:1,description:'Normal: the original balanced campaign.'},
+    veteran:{label:'Veteran',hp:1.42,speed:1.10,spawnCount:1.18,spawnRate:1.08,coreDamage:1.30,eliteBonus:.08,bossBonus:1.20,description:'Veteran: enemies have 42% more health, move 10% faster, arrive in larger waves, and hit the Crystal harder. More elites appear.'},
+    nightmare:{label:'Nightmare',hp:1.95,speed:1.20,spawnCount:1.38,spawnRate:1.18,coreDamage:1.70,eliteBonus:.16,bossBonus:1.45,description:'Nightmare: nearly double enemy health, faster and denser waves, harsher Crystal damage, more elites, and 45% extra boss health.'}
+  };
+  let challengeDifficulty='normal';
+  try{const savedChallenge=localStorage.getItem('eg-challenge-difficulty-v1');if(challengeProfiles[savedChallenge])challengeDifficulty=savedChallenge;}catch(_){}
+  function challengeProfile(){return challengeProfiles[challengeDifficulty]||challengeProfiles.normal;}
+  function renderChallengeButtons(){
+    document.querySelectorAll('[data-u71-difficulty]').forEach(b=>{const active=b.dataset.u71Difficulty===challengeDifficulty;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
+    const note=document.getElementById('u71-difficulty-note');if(note)note.textContent=challengeProfile().description;const badge=document.getElementById('u71-difficulty-badge');if(badge){badge.dataset.mode=challengeDifficulty;badge.textContent=(challengeDifficulty==='normal'?'🛡️ ':challengeDifficulty==='veteran'?'⚔️ ':'🔥 ')+challengeProfile().label.toUpperCase();}
+  }
   function isCoopRun(){return !!(coopChannel&&coopRoomCode);}
   const realms={
     astral:{name:'Astral Rift',subtitle:'Astral Rift · Dimensional defense',description:'A balanced cosmic battlefield. No elemental bonus or enemy penalty.',sky:'#080b25',fog:'#111039',platform:'#211b4c',rim:'#34256c',ground:'#29245e',path:'#484078',pathBase:'#17132f',line:'#6feeff',accent:'#8c3cff',crystal:'#23c9ec',hemi:0x8dbdff,sun:0xb5a2ff,fill:0x3ee9ff,enemyHp:1,bonus:null},
@@ -651,11 +695,12 @@
     const isBoss=type==='boss';
     const profile=isBoss?realmBosses[activeRealm]:null;
     const b=isBoss?{...bases.boss,name:profile.name,icon:profile.icon,color:profile.color,hp:bases.boss.hp*profile.hp,reward:profile.reward}:(bases[type]||bases.scout);
+    const challenge=challengeProfile();
     const stageScale=Math.pow(1.28,Math.max(0,stage-1));
-    const scale=(1+(wave-1)*.17)*(realms[activeRealm].enemyHp||1)*stageScale;
-    const e={id:nextEnemyId++,type,name:b.name,icon:b.icon,color:b.color,progress:0,x:path[0].x,y:path[0].y,speed:b.speed*(1+Math.min(wave,10)*.012+Math.max(0,stage-1)*.025)*(realms[activeRealm].speed||1),maxHp:Math.round(b.hp*scale),hp:Math.round(b.hp*scale),reward:b.reward+Math.floor(wave*1.5)+Math.max(0,stage-1)*10,coreDamage:b.damage,slow:0,slowFactor:1,poison:0,poisonDps:0,burn:0,burnDps:0,hitFlash:0,boss:isBoss,hazardTimer:1.1,elite:false,affix:null,damageReduction:0};
+    const scale=(1+(wave-1)*.17)*(realms[activeRealm].enemyHp||1)*stageScale*challenge.hp*(isBoss?challenge.bossBonus:1);
+    const e={id:nextEnemyId++,type,name:b.name,icon:b.icon,color:b.color,progress:0,x:path[0].x,y:path[0].y,speed:b.speed*(1+Math.min(wave,10)*.012+Math.max(0,stage-1)*.025)*(realms[activeRealm].speed||1)*challenge.speed,maxHp:Math.round(b.hp*scale),hp:Math.round(b.hp*scale),reward:b.reward+Math.floor(wave*1.5)+Math.max(0,stage-1)*10,coreDamage:Math.ceil(b.damage*challenge.coreDamage),slow:0,slowFactor:1,poison:0,poisonDps:0,burn:0,burnDps:0,hitFlash:0,boss:isBoss,hazardTimer:1.1,elite:false,affix:null,damageReduction:0};
     // From Wave 3 onward, a minority of ordinary enemies spawn with a visible elite trait.
-    if(!isBoss&&wave>=3&&Math.random()<Math.min(.28,.14+Math.max(0,stage-1)*.025)){
+    if(!isBoss&&wave>=3&&Math.random()<Math.min(.42,.14+Math.max(0,stage-1)*.025+challenge.eliteBonus)){
       const affixes=[
         {id:'armored',label:'ARMORED',icon:'🛡️',color:'#d7e6ff',hp:1.55,speed:1,reward:1.65,reduction:.2,description:'takes 20% less damage'},
         {id:'swift',label:'SWIFT',icon:'💨',color:'#83f5ed',hp:1.15,speed:1.42,reward:1.8,reduction:0,description:'moves 42% faster'},
@@ -682,7 +727,7 @@
     if(!started){started=true;$('intro').style.display='none';}
     if(gameOver||victory||waveActive)return;
     if(wave>=10){renderUI();return;}
-    wave++;waveActive=true;spawnRemaining=Math.min(6+wave*2,24);waveSpawnTotal=spawnRemaining;spawnTimer=.3;
+    wave++;waveActive=true;const challenge=challengeProfile();const cap=challengeDifficulty==='nightmare'?36:challengeDifficulty==='veteran'?30:24;spawnRemaining=Math.min(Math.ceil((6+wave*2)*challenge.spawnCount),cap);waveSpawnTotal=spawnRemaining;spawnTimer=.3;
     $('battle-state').textContent=`STAGE ${stage} · WAVE ${wave} INCOMING`;
     setText('start-wave',`⚔ Wave ${wave} running`);
     $('start-wave').disabled=true;
@@ -882,7 +927,7 @@
     if(coopChannel&&coopRoomCode&&!coopIsHost)return;
     if(paused||!started||gameOver||victory)return;
     simTime+=dt;mana=Math.min(100,mana+dt*2.15);
-    if(waveActive){spawnTimer-=dt;if(spawnRemaining>0&&spawnTimer<=0){const index=waveSpawnTotal-spawnRemaining;spawnEnemy(enemyTypeFor(index));spawnRemaining--;spawnTimer=Math.max(.52,1.02-wave*.035);}if(spawnRemaining===0&&enemies.length===0){waveActive=false;if(typeof window.__egStatsEvent==='function')window.__egStatsEvent('wave');awardHeroXp(35+wave*8,'wave');const bonus=65+wave*9+Math.max(0,stage-1)*12;gold+=bonus;mana=Math.min(100,mana+24);announce(`Stage ${stage}, wave ${wave} cleared! +${bonus} gold · +24 mana.`);if(wave>=10){if(typeof window.__egAchievementEvent==='function')window.__egAchievementEvent('stage');if(typeof window.__egStatsEvent==='function')window.__egStatsEvent('stage');if(!isCoopRun()&&stage>=SOLO_STAGE_LIMIT){stageTransitionPending=false;victory=true;announce('Campaign victory! All five stages are complete. Your towers and remaining gold are saved.');}else{stageTransitionPending=true;const stageBonus=100+stage*25;gold+=stageBonus;announce(`Stage ${stage} cleared! +${stageBonus} stage reward. Your towers, gold, and Crystal condition carry forward.`);}}saveProgress(true);renderUI();}}
+    if(waveActive){spawnTimer-=dt;if(spawnRemaining>0&&spawnTimer<=0){const index=waveSpawnTotal-spawnRemaining;spawnEnemy(enemyTypeFor(index));spawnRemaining--;const challenge=challengeProfile();spawnTimer=Math.max(challengeDifficulty==='nightmare'?.34:.42,(1.02-wave*.035)/challenge.spawnRate);}if(spawnRemaining===0&&enemies.length===0){waveActive=false;if(typeof window.__egStatsEvent==='function')window.__egStatsEvent('wave');awardHeroXp(35+wave*8,'wave');const bonus=65+wave*9+Math.max(0,stage-1)*12;gold+=bonus;mana=Math.min(100,mana+24);announce(`Stage ${stage}, wave ${wave} cleared! +${bonus} gold · +24 mana.`);if(wave>=10){if(typeof window.__egAchievementEvent==='function')window.__egAchievementEvent('stage');if(typeof window.__egStatsEvent==='function')window.__egStatsEvent('stage');if(!isCoopRun()&&stage>=SOLO_STAGE_LIMIT){stageTransitionPending=false;victory=true;announce('Campaign victory! All five stages are complete. Your towers and remaining gold are saved.');}else{stageTransitionPending=true;const stageBonus=100+stage*25;gold+=stageBonus;announce(`Stage ${stage} cleared! +${stageBonus} stage reward. Your towers, gold, and Crystal condition carry forward.`);}}saveProgress(true);renderUI();}}
     for(const e of enemies){if(e.hp<=0)continue;e.slow=Math.max(0,e.slow-dt);e.burn=Math.max(0,e.burn-dt);e.poison=Math.max(0,e.poison-dt);e.hitFlash=Math.max(0,e.hitFlash-dt);if(e.burn>0){damageEnemy(e,e.burnDps*dt,'fire');}if(e.poison>0){damageEnemy(e,e.poisonDps*dt,'nature');}if(e.hp<=0)continue;
       // Realm hazards trigger at marked intervals along each realm's path. They are intentionally mild so they add variety without making a wave unfair.
       e.hazardTimer=(e.hazardTimer??1)-dt;
@@ -1296,7 +1341,7 @@
   const SAVE_BACKUP_KEY = 'elemental-guardians-save-backup-v1';
   const SAVE_ALTERNATE_KEY = 'elemental-guardians-save-alternate-v1';
   function snapshotProgress(){
-    return {version:3,savedAt:new Date().toISOString(),gold,mana,lives,wave,stage,stageTransitionPending,stageRewardClaimed,stageRewardChoice,victory,selectedHero,realm:activeRealm,
+    return {version:3,savedAt:new Date().toISOString(),challengeDifficulty,gold,mana,lives,wave,stage,stageTransitionPending,stageRewardClaimed,stageRewardChoice,victory,selectedHero,realm:activeRealm,
       towers:pads.filter(p=>p.tower).map(p=>({padId:p.id,element:p.tower.element,level:p.tower.level,kills:p.tower.kills,invested:p.tower.invested,priority:p.tower.priority||'first'}))};
   }
   function readCheckpoint(key){
@@ -1313,7 +1358,7 @@
   function refreshSaveControls(){
     try{
       $('load-progress').disabled=!readCheckpoint(SAVE_KEY);
-      $('restore-backup').disabled=!readCheckpoint(SAVE_BACKUP_KEY);
+      $('restore-backup').disabled=!readCheckpoint(SAVE_BACKUP_KEY) || localStorage.getItem('eg-main-checkpoint-lock-v1')==='1';
       $('load-alternate').disabled=!readCheckpoint(SAVE_ALTERNATE_KEY);
     }catch(_){$('load-progress').disabled=true;$('restore-backup').disabled=true;$('load-alternate').disabled=true;}
   }
@@ -1327,6 +1372,21 @@
     }
     const snapshot=snapshotProgress();
     try{
+      // Upgrade 70: a locked Main checkpoint is never overwritten by manual or automatic saves.
+      const mainCheckpointLocked=localStorage.getItem('eg-main-checkpoint-lock-v1')==='1';
+      if(targetKey===SAVE_KEY && mainCheckpointLocked){
+        if(automatic){
+          // Preserve the active run in Separate Run instead of destroying the pinned checkpoint.
+          storeCheckpoint(SAVE_ALTERNATE_KEY,snapshot);
+          if(status)status.textContent=`Main checkpoint is LOCKED. Auto-save stored separately (${checkpointLabel(snapshot)}); Main remains unchanged.`;
+          refreshSaveControls();
+          return true;
+        }
+        if(status)status.textContent='Main checkpoint is LOCKED. Unlock it in Checkpoint Guardian before replacing it, or choose Save separately.';
+        announce('Main checkpoint is locked. Your primary save was not changed.');
+        refreshSaveControls();
+        return false;
+      }
       const primary=readCheckpoint(SAVE_KEY);
       if(targetKey===SAVE_KEY && automatic && primary && checkpointRank(snapshot)<checkpointRank(primary)){
         // A lower-stage/earlier-wave auto-save must never destroy the player's best campaign checkpoint.
@@ -1357,15 +1417,19 @@
   function openCheckpointProtectDialog(){
     if(waveActive||enemies.length){saveProgress(false);return;}
     const existing=readCheckpoint(SAVE_KEY);
+    const mainLocked=localStorage.getItem('eg-main-checkpoint-lock-v1')==='1';
+    const replaceButton=$('checkpoint-replace-main');if(replaceButton)replaceButton.disabled=mainLocked;
     if(!existing){saveProgress(false,SAVE_KEY,true);return;}
     const current=snapshotProgress();
     const weaker=checkpointRank(current)<checkpointRank(existing);
     const copy=$('checkpoint-protect-copy');
-    copy.textContent=weaker
-      ? `Your current run is ${checkpointLabel(current)}, but the saved checkpoint is ${checkpointLabel(existing)}.
+    copy.textContent=mainLocked
+      ? `🔒 MAIN CHECKPOINT LOCKED. Your saved checkpoint (${checkpointLabel(existing)}) is protected. Choose “Save separately” to preserve this current run. To replace Main, close this dialog, unlock Main in Checkpoint Guardian, then try again.`
+      : weaker
+        ? `Your current run is ${checkpointLabel(current)}, but the saved checkpoint is ${checkpointLabel(existing)}.
 
 Choose “Save separately” to keep both runs, or replace the main checkpoint only if you really want to. The existing checkpoint will be backed up before replacement.`
-      : `Your current run is ${checkpointLabel(current)}. The main checkpoint is ${checkpointLabel(existing)}.
+        : `Your current run is ${checkpointLabel(current)}. The main checkpoint is ${checkpointLabel(existing)}.
 
 Replacing it will first keep the current main checkpoint as a backup. Choose “Save separately” to avoid changing the main checkpoint.`;
     $('checkpoint-protect-modal').hidden=false;
@@ -1373,6 +1437,11 @@ Replacing it will first keep the current main checkpoint as a backup. Choose “
   }
   function closeCheckpointProtectDialog(){$('checkpoint-protect-modal').hidden=true;}
   function restorePreviousCheckpoint(){
+    if(localStorage.getItem('eg-main-checkpoint-lock-v1')==='1'){
+      $('save-status').textContent='Main checkpoint is LOCKED. Unlock it in Checkpoint Guardian before restoring Previous Backup.';
+      announce('Main checkpoint is locked. Restore was cancelled and no checkpoint was changed.');
+      return;
+    }
     const backup=readCheckpoint(SAVE_BACKUP_KEY);
     if(!backup){$('save-status').textContent='No previous checkpoint backup is available.';refreshSaveControls();return;}
     try{
@@ -1393,7 +1462,7 @@ Replacing it will first keep the current main checkpoint as a backup. Choose “
       return;
     }
     const safeNum=(v,min,max,fallback)=>Number.isFinite(v)?clamp(v,min,max):fallback;
-    gold=safeNum(data.gold,0,999999,450);mana=safeNum(data.mana,0,100,100);lives=safeNum(data.lives,1,20,20);wave=Math.floor(safeNum(data.wave,0,10,0));stage=Math.floor(safeNum(data.stage,1,999,1));stageTransitionPending=!!data.stageTransitionPending;victory=!!data.victory&&!stageTransitionPending;stageRewardClaimed=!!data.stageRewardClaimed;stageRewardChoice=['crystal','mana','gold'].includes(data.stageRewardChoice)?data.stageRewardChoice:null;if(!stageTransitionPending&&!victory&&wave>=10&&stage<SOLO_STAGE_LIMIT)stageTransitionPending=true;if(!stageTransitionPending&&!victory&&wave>=10&&stage>=SOLO_STAGE_LIMIT)victory=true;
+    challengeDifficulty=challengeProfiles[data.challengeDifficulty]?data.challengeDifficulty:'normal';try{localStorage.setItem('eg-challenge-difficulty-v1',challengeDifficulty);}catch(_){}renderChallengeButtons();gold=safeNum(data.gold,0,999999,450);mana=safeNum(data.mana,0,100,100);lives=safeNum(data.lives,1,20,20);wave=Math.floor(safeNum(data.wave,0,10,0));stage=Math.floor(safeNum(data.stage,1,999,1));stageTransitionPending=!!data.stageTransitionPending;victory=!!data.victory&&!stageTransitionPending;stageRewardClaimed=!!data.stageRewardClaimed;stageRewardChoice=['crystal','mana','gold'].includes(data.stageRewardChoice)?data.stageRewardChoice:null;if(!stageTransitionPending&&!victory&&wave>=10&&stage<SOLO_STAGE_LIMIT)stageTransitionPending=true;if(!stageTransitionPending&&!victory&&wave>=10&&stage>=SOLO_STAGE_LIMIT)victory=true;
     selectedHero=heroes[data.selectedHero]?data.selectedHero:'ember';
     applyStageLayout(stage);
     activeRealm=realms[data.realm]?data.realm:'astral';setRealm(activeRealm,true);
@@ -1429,7 +1498,14 @@ Replacing it will first keep the current main checkpoint as a backup. Choose “
   }
   canvas.addEventListener('pointermove',ev=>{const p=boardPointFromEvent(ev);if(p){pointer.x=p.x;pointer.y=p.y;}});
   canvas.addEventListener('click',ev=>{if(window.__egMapGestureMovedOnce)return;handleBoardTap(ev);});
-  $('begin').addEventListener('click',()=>{enterGameFullscreen();try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(()=>{});}catch{}started=true;$('intro').style.display='none';announce('The Sacred Crystal is under your protection.');});
+  document.querySelectorAll('[data-u71-difficulty]').forEach(button=>button.addEventListener('click',()=>{
+    if(started)return;
+    const choice=button.dataset.u71Difficulty;if(!challengeProfiles[choice])return;
+    challengeDifficulty=choice;try{localStorage.setItem('eg-challenge-difficulty-v1',choice);}catch(_){}
+    renderChallengeButtons();announce(`${challengeProfile().label} challenge selected. ${challengeProfile().description}`);
+  }));
+  renderChallengeButtons();
+  $('begin').addEventListener('click',()=>{enterGameFullscreen();try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(()=>{});}catch{}started=true;$('intro').style.display='none';announce(`The Sacred Crystal is under your protection. Challenge: ${challengeProfile().label}.`);});
   document.querySelectorAll('.tower-btn[data-element]').forEach(b=>b.addEventListener('click',()=>{if(gameOver||victory)return;selectBuildElement(b.dataset.element);announce(`${defs[b.dataset.element].name} selected. Tap an empty rune pad.`);}));
   $('target-priority').addEventListener('change',()=>{const t=selectedTower();if(!t)return;if(coopChannel&&coopRoomCode&&!coopIsHost){announce('Target priority changes are local in this prototype.');$('target-priority').value=t.priority||'first';return;}t.priority=$('target-priority').value;lastSelectionRenderKey='';updateSelectionUI();announce(`${defs[t.element].short} targeting: ${$('target-priority').selectedOptions[0].text}.`);});
   document.querySelectorAll('.hero').forEach(b=>b.addEventListener('click',()=>{selectedHero=b.dataset.hero;document.querySelectorAll('.hero').forEach(x=>x.classList.toggle('active',x===b));$('hero-note').textContent=heroes[selectedHero].note;$('ultimate-note').textContent=selectedHero==='ember'?'Tap the battlefield to choose the impact zone.':selectedHero==='frost'?'Instant effect: slows and damages all current enemies.':'Instant effect: strikes up to six of the strongest enemies.';renderHeroProgress();announce(`${heroes[selectedHero].name} is your active guardian.`);renderUI();}));
@@ -3447,7 +3523,7 @@ body.u48-map-expanded #u66-quick-open{bottom:max(40px,calc(env(safe-area-inset-b
   get('u67-save-summary').textContent=`Main: ${label(main)}\nPrevious backup: ${label(backup)}\nSeparate run: ${label(alt)}`;
   get('u67-export-main').disabled=!main||!get('u65-export-main');
   get('u67-export-backup').disabled=!backup||!get('u65-export-backup');
-  get('u67-restore-backup').disabled=!backup||!get('restore-backup');
+  get('u67-restore-backup').disabled=!backup||!get('restore-backup')||localStorage.getItem('eg-main-checkpoint-lock-v1')==='1';
   get('u67-load-alternate').disabled=!alt||!get('load-alternate');
  }
  function openConfirm(title,copy,action,focusButton){
@@ -3603,5 +3679,123 @@ body.u48-map-expanded #u66-quick-open{bottom:max(40px,calc(env(safe-area-inset-b
 })();
 </script>
 
+
+
+<!-- Upgrade 70: user-controlled lock for the main checkpoint. -->
+<style id="upgrade70-main-checkpoint-lock-style">
+#u70-main-lock-status{grid-column:1/-1;border:1px solid #496787;border-radius:8px;background:#0b1728;color:#d9e8fb;padding:8px;font:700 10px/1.45 system-ui,sans-serif;white-space:pre-line}
+#u70-main-lock-toggle{grid-column:1/-1;border:1px solid #6e91b8;border-radius:8px;min-height:40px;background:linear-gradient(180deg,#294866,#1a3049);color:#edf5ff;padding:8px;font:850 11px/1.2 system-ui,sans-serif;touch-action:manipulation;cursor:pointer}
+#u70-main-lock-toggle.locked{border-color:#64b88d;background:linear-gradient(180deg,#22543f,#163b2d);color:#caffdd}
+#u70-main-lock-note{grid-column:1/-1;color:#94aac6;font:500 9px/1.45 system-ui,sans-serif}
+</style>
+<script id="upgrade70-main-checkpoint-lock-script">
+(()=>{
+ if(window.__egMainCheckpointLock70)return;window.__egMainCheckpointLock70=true;
+ const $=id=>document.getElementById(id);
+ const grid=document.querySelector('#u67-quick-actions .u67-grid');
+ const status=$('u67-save-summary');
+ if(!grid||!status)return;
+ const LOCK_KEY='eg-main-checkpoint-lock-v1';
+ const MAIN_KEY='elemental-guardians-save-v1';
+ const readMain=()=>{try{const d=JSON.parse(localStorage.getItem(MAIN_KEY)||'null');return d&&[1,2,3].includes(Number(d.version))&&Array.isArray(d.towers)?d:null;}catch(_){return null;}};
+ const label=d=>d?`Stage ${Math.max(1,Math.floor(Number(d.stage)||1))} · Wave ${Math.max(0,Math.min(10,Math.floor(Number(d.wave)||0)))} · ${Array.isArray(d.towers)?d.towers.length:0} towers`:'No valid Main checkpoint found';
+ const line=document.createElement('div');line.id='u70-main-lock-status';line.setAttribute('aria-live','polite');
+ const button=document.createElement('button');button.id='u70-main-lock-toggle';button.type='button';
+ const note=document.createElement('div');note.id='u70-main-lock-note';note.textContent='When locked, manual replacements and Restore Previous are blocked. Automatic main saves go to Separate Run instead. Unlock only when you deliberately want to change Main.';
+ grid.append(line,button,note);
+ function isLocked(){try{return localStorage.getItem(LOCK_KEY)==='1';}catch(_){return false;}}
+ function render(){const locked=isLocked(),main=readMain();line.textContent=(locked?'🔒 MAIN CHECKPOINT LOCKED':'🔓 MAIN CHECKPOINT UNLOCKED')+'\n'+label(main)+(locked?'\nProtection is active for this browser profile.':'\nLock it to guard against accidental replacement.');button.classList.toggle('locked',locked);button.textContent=locked?'🔓 Unlock Main Checkpoint':'🔒 Lock Main Checkpoint';button.setAttribute('aria-pressed',String(locked));const replace=$('checkpoint-replace-main');if(replace)replace.disabled=locked;}
+ button.addEventListener('click',()=>{
+  const wasLocked=isLocked();
+  if(wasLocked){let ok=false;try{ok=window.confirm('Unlock the Main checkpoint? Saving or restoring can replace it again. Your current Main save will not change just by unlocking.');}catch(_){ok=false;}if(!ok)return;try{localStorage.removeItem(LOCK_KEY);}catch(_){line.textContent='Could not unlock: browser storage is unavailable.';return;}}
+  else{try{localStorage.setItem(LOCK_KEY,'1');}catch(_){line.textContent='Could not lock: browser storage is unavailable.';return;}}
+  render();
+  const msg=isLocked()?'🔒 Main checkpoint is now protected. Automatic main saves will be routed to Separate Run.':'🔓 Main checkpoint unlocked. You can replace or restore it after confirmation.';
+  line.textContent=msg+'\n'+label(readMain());
+ });
+ const mo=new MutationObserver(render);['u67-save-summary','save-status'].forEach(id=>{const el=$(id);if(el)mo.observe(el,{childList:true,subtree:true,characterData:true});});
+ window.addEventListener('storage',e=>{if(!e.key||e.key===LOCK_KEY||e.key===MAIN_KEY)render();});
+ setInterval(render,1200);render();
+})();
+</script>
+
 </body>
 </html>
+
+
+<!-- Upgrade 69: read-only compare preview for Main, Previous Backup, and Separate Run. -->
+<style id="upgrade69-checkpoint-compare-style">
+#u69-compare-section{margin-top:9px;border:1px solid #5b789b;border-radius:10px;overflow:hidden;background:#101c2e;color:#edf5ff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+#u69-compare-open{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:40px;border:0;background:linear-gradient(180deg,#233e5b,#172b43);color:#eff7ff;padding:9px 10px;text-align:left;font:850 11px/1.25 system-ui,sans-serif;cursor:pointer;touch-action:manipulation}
+#u69-compare-open:active{filter:brightness(1.12)}
+#u69-compare-body{display:none;padding:9px}
+#u69-compare-section.open #u69-compare-body{display:block}
+#u69-compare-body .u69-lead{margin:0 0 8px;color:#a9bfdc;font-size:10px;line-height:1.5}
+#u69-compare-now{width:100%;min-height:38px;border:1px solid #6c91b7;border-radius:8px;background:linear-gradient(180deg,#2d4868,#1c304a);color:#edf5ff;padding:8px;font:850 10px system-ui,sans-serif;touch-action:manipulation;cursor:pointer}
+#u69-compare-result{display:grid;gap:7px;margin-top:8px}
+#u69-compare-result .u69-card{min-width:0;padding:8px;border:1px solid #304764;border-radius:8px;background:#0a1423}
+#u69-compare-result .u69-card-head{display:flex;align-items:center;justify-content:space-between;gap:7px;font-size:10px;font-weight:850}
+#u69-compare-result .u69-status{flex:0 0 auto;border-radius:99px;padding:3px 6px;font-size:8px;border:1px solid #526f8f;background:#1a3048;color:#c7ddfa}
+#u69-compare-result .u69-status.ok{border-color:#458e70;background:#123b31;color:#a9f2cf}
+#u69-compare-result .u69-status.warn{border-color:#9b7a3c;background:#40351f;color:#ffe0a0}
+#u69-compare-result .u69-status.bad{border-color:#a45666;background:#492333;color:#ffc0ca}
+#u69-compare-result .u69-meta{margin-top:5px;color:#b6c9e2;font-size:10px;line-height:1.5;white-space:pre-line;overflow-wrap:anywhere}
+#u69-compare-summary{margin-top:8px;padding:8px;border:1px solid #3c5777;border-radius:8px;background:#172b43;color:#deebff;font-size:10px;line-height:1.5;white-space:pre-line}
+#u69-compare-section .u69-foot{margin-top:7px;color:#8fa6c5;font-size:9px;line-height:1.45}
+@media(max-width:430px){#u69-compare-open{font-size:10px}#u69-compare-result .u69-meta{font-size:9px}#u69-compare-summary{font-size:9px}}
+</style>
+<script id="upgrade69-checkpoint-compare-script">
+(()=>{
+ if(window.__egCheckpointCompare69)return;window.__egCheckpointCompare69=true;
+ const modalBody=document.getElementById('u66-modal-body');
+ const actionGrid=document.querySelector('#u67-quick-actions .u67-grid');
+ if(!modalBody||!actionGrid)return;
+ const KEY={main:'elemental-guardians-save-v1',backup:'elemental-guardians-save-backup-v1',alternate:'elemental-guardians-save-alternate-v1',heroes:'eg-hero-progression-v1'};
+ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ function safeRead(key){try{const raw=localStorage.getItem(key);if(raw===null)return {state:'empty',data:null};const data=JSON.parse(raw);if(!data||typeof data!=='object'||Array.isArray(data))return {state:'invalid',data:null,rawExists:true};return {state:'readable',data};}catch(_){return {state:'invalid',data:null,rawExists:true};}}
+ const validCheckpoint=d=>!!d&&[1,2,3].includes(Number(d.version))&&Array.isArray(d.towers)&&Number.isFinite(Number(d.stage))&&Number(d.stage)>=1&&Number.isFinite(Number(d.wave))&&Number(d.wave)>=0&&Number(d.wave)<=10;
+ function getSaved(key){const r=safeRead(key);if(r.state!=='readable')return r;return validCheckpoint(r.data)?{state:'valid',data:r.data}:{state:'invalid',data:null,rawExists:true};}
+ const stage=d=>Math.max(1,Math.floor(Number(d.stage)||1));
+ const wave=d=>Math.max(0,Math.min(10,Math.floor(Number(d.wave)||0)));
+ const rank=d=>stage(d)*100000+wave(d)*100+(d.stageTransitionPending?50:0)+(d.victory?75:0);
+ const heroLabel=id=>({ember:'Ember Mage',frost:'Frost Ranger',storm:'Storm Knight'})[String(id||'').toLowerCase()]||String(id||'Not recorded');
+ function timeLabel(value){if(!value)return 'Save time: not recorded';const d=new Date(value);return Number.isNaN(d.getTime())?'Save time: unavailable':'Saved: '+d.toLocaleString();}
+ function readHeroLevel(d){let progress;try{progress=JSON.parse(localStorage.getItem(KEY.heroes)||'null');}catch(_){progress=null;}const selected=String(d.selectedHero||'');const h=progress&&progress[selected];if(h&&Number.isFinite(Number(h.level)))return 'Hero progression level: '+Math.max(1,Math.floor(Number(h.level)));if(Number.isFinite(Number(d.heroLevel)))return 'Hero level in checkpoint: '+Math.max(1,Math.floor(Number(d.heroLevel)));return 'Hero level: stored separately / not available';}
+ function card(title,result){
+  if(result.state==='empty')return `<article class="u69-card"><div class="u69-card-head">${esc(title)}<span class="u69-status warn">EMPTY</span></div><div class="u69-meta">No checkpoint is stored in this slot.</div></article>`;
+  if(result.state!=='valid')return `<article class="u69-card"><div class="u69-card-head">${esc(title)}<span class="u69-status bad">CHECK DATA</span></div><div class="u69-meta">Data exists but does not pass basic checkpoint validation. Keep the slot untouched until you have exported any readable saves.</div></article>`;
+  const d=result.data;const towers=Array.isArray(d.towers)?d.towers.length:0;const gold=Number.isFinite(Number(d.gold))?Math.floor(Number(d.gold)):'?';const mana=Number.isFinite(Number(d.mana))?Math.floor(Number(d.mana)):'?';const lives=Number.isFinite(Number(d.lives))?Math.floor(Number(d.lives)):'?';
+  const status=d.victory?'Campaign complete flag set':d.stageTransitionPending?'Stage transition pending':'Checkpoint readable';
+  const details=`Stage ${stage(d)} · Wave ${wave(d)}/10\nGold ${gold} · Mana ${mana} · Crystal ${lives}\nTowers ${towers} · ${heroLabel(d.selectedHero)}\n${readHeroLevel(d)}\n${timeLabel(d.savedAt)}\n${status}`;
+  return `<article class="u69-card"><div class="u69-card-head">${esc(title)}<span class="u69-status ok">VALID</span></div><div class="u69-meta">${esc(details)}</div></article>`;
+ }
+ const section=document.createElement('section');section.id='u69-compare-section';
+ section.innerHTML='<button id="u69-compare-open" type="button" aria-expanded="false" aria-controls="u69-compare-body"><span>🔎 Compare Saves Before Recovery</span><span id="u69-chevron">＋</span></button><div id="u69-compare-body"><p class="u69-lead">Review Main, Previous Backup, and Separate Run side by side before you restore anything. This comparison is read-only.</p><button id="u69-compare-now" type="button">↻ Compare Current Checkpoints</button><div id="u69-compare-result"><article class="u69-card"><div class="u69-card-head">Ready to compare<span class="u69-status">WAITING</span></div><div class="u69-meta">Tap Compare Current Checkpoints to read the current local save slots.</div></article></div><div id="u69-compare-summary" aria-live="polite">No checkpoint data has been changed.</div><div class="u69-foot">Important: hero level and campaign stage are different progression values. Choose a checkpoint based on the campaign stage/wave and verify towers, resources, and hero before restoring.</div></div>';
+ modalBody.insertBefore(section,document.getElementById('u68-save-audit')||null);
+ const toggle=section.querySelector('#u69-compare-open'),body=section.querySelector('#u69-compare-body'),result=section.querySelector('#u69-compare-result'),summary=section.querySelector('#u69-compare-summary');
+ toggle.addEventListener('click',()=>{const open=section.classList.toggle('open');toggle.setAttribute('aria-expanded',String(open));section.querySelector('#u69-chevron').textContent=open?'−':'＋';if(open)compare();});
+ section.querySelector('#u69-compare-now').addEventListener('click',compare);
+ function compare(){
+  const saves=[{title:'⭐ Main checkpoint',key:KEY.main},{title:'↶ Previous backup',key:KEY.backup},{title:'▶ Separate run',key:KEY.alternate}].map(x=>({...x,result:getSaved(x.key)}));
+  result.innerHTML=saves.map(x=>card(x.title,x.result)).join('');
+  const valid=saves.filter(x=>x.result.state==='valid');let notes=[];
+  const main=saves.find(x=>x.key===KEY.main),backup=saves.find(x=>x.key===KEY.backup);
+  if(main.result.state==='valid'&&backup.result.state==='valid'){
+    const mr=rank(main.result.data),br=rank(backup.result.data);
+    if(mr>br)notes.push('Main is further along by campaign stage/wave. Still compare tower layout and resources before choosing.');
+    else if(br>mr)notes.push('⚠️ Previous Backup is further along by campaign stage/wave than Main. Export both before restoring or saving.');
+    else notes.push('Main and Previous Backup have the same campaign stage/wave rank, but their towers and resources may differ.');
+  }else if(backup.result.state==='valid'&&main.result.state!=='valid')notes.push('A readable Previous Backup exists while Main is empty or invalid. Review the backup before restoring.');
+  else if(main.result.state==='valid'&&backup.result.state!=='valid')notes.push('Main is readable, but there is no valid previous backup in this browser. Export Main before risky changes.');
+  else notes.push('No valid Main/Backup pair is available. Do not delete or overwrite any readable save data.');
+  if(valid.length){const furthest=valid.slice().sort((a,b)=>rank(b.result.data)-rank(a.result.data))[0];notes.push(`Furthest readable campaign position: ${furthest.title.replace(/^[^A-Za-z]+/,'')} — Stage ${stage(furthest.result.data)}, Wave ${wave(furthest.result.data)}/10.`);}
+  else notes.push('No readable checkpoint found among the three slots.');
+  notes.push('Hero progression is stored separately; a high hero level alone does not prove that the campaign checkpoint is further ahead.');
+  summary.textContent=notes.join('\n');
+ }
+ // Add a one-tap entry in the existing quick-action grid so the comparison is easy to find.
+ const quick=document.createElement('button');quick.type='button';quick.id='u69-compare-shortcut';quick.textContent='🔎 Compare Saves';
+ quick.addEventListener('click',()=>{section.classList.add('open');toggle.setAttribute('aria-expanded','true');section.querySelector('#u69-chevron').textContent='−';compare();section.scrollIntoView({behavior:'smooth',block:'start'});});
+ actionGrid.appendChild(quick);
+})();
+</script>
